@@ -48,8 +48,8 @@ jobs:
             # Create backend.env with secrets
             echo "PORT=8000" > /home/ubuntu/backend.env
             echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> /home/ubuntu/backend.env
+            echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> /home/ubuntu/backend.env
             echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" >> /home/ubuntu/backend.env
-            echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" >> /home/ubuntu/backend.env
             echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> /home/ubuntu/backend.env
             echo "VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }}" >> /home/ubuntu/backend.env
             echo "VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }}" >> /home/ubuntu/backend.env
