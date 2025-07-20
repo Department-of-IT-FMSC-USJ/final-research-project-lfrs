@@ -1,0 +1,26 @@
+# Stage 1: Build TypeScript to JS
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+COPY Backend/package*.json Backend/tsconfig.json ./
+
+RUN npm install
+
+COPY Backend/src ./src
+
+RUN npm run build
+
+# Stage 2: Run compiled JS
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY Backend/package*.json ./
+RUN npm install --only=production
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8000
+
+CMD ["node", "dist/index.js"]
