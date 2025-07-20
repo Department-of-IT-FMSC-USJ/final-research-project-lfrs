@@ -27,7 +27,13 @@ jobs:
 
       - name: Build & Push Frontend
         run: |
-          docker build -t $IMAGE_FRONTEND ./Frontend
+          docker build \
+            --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
+            --build-arg VITE_BASE_URL=${{ secrets.VITE_BASE_URL }} \
+            --build-arg VITE_CLOUDINARY_URL=${{ secrets.VITE_CLOUDINARY_URL }} \
+            --build-arg VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }} \
+            --build-arg VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }} \
+            -t $IMAGE_FRONTEND ./Frontend
           docker push $IMAGE_FRONTEND
 
       - name: Set up SSH
