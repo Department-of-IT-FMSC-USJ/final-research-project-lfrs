@@ -51,7 +51,7 @@ jobs:
 
             # Create frontend.env with VITE_ prefixed envs
             echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > /home/ubuntu/frontend.env
-            echo "VITE_BASE_URL=${{ secrets.VITE_BASE_UR }}" >> /home/ubuntu/frontend.env
+            echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}" >> /home/ubuntu/frontend.env
             echo "VITE_CLOUDINARY_URL=${{ secrets.VITE_CLOUDINARY_URL }}" >> /home/ubuntu/frontend.env
             echo "VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }}" >> /home/ubuntu/frontend.env
             echo "VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }}" >> /home/ubuntu/frontend.env
