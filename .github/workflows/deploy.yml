@@ -1,0 +1,71 @@
+name: CI/CD to EC2 with Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_BACKEND: sandunchathuranga/lfrs-backend:latest
+      IMAGE_FRONTEND: sandunchathuranga/lfrs-frontend:latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build & Push Backend
+        run: |
+          docker build -t $IMAGE_BACKEND ./Backend
+          docker push $IMAGE_BACKEND
+
+      - name: Build & Push Frontend
+        run: |
+          docker build -t $IMAGE_FRONTEND ./Frontend
+          docker push $IMAGE_FRONTEND
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << EOF
+
+            # Create backend.env with secrets
+            echo "PORT=8000" > /home/ubuntu/backend.env
+            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> /home/ubuntu/backend.env
+            echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> /home/ubuntu/backend.env
+            echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> /home/ubuntu/backend.env
+            echo "VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }}" >> /home/ubuntu/backend.env
+            echo "VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }}" >> /home/ubuntu/backend.env
+            echo "VITE_CLOUDINARY_URL=${{ secrets.VITE_CLOUDINARY_URL }}" >> /home/ubuntu/backend.env
+            echo "FRONTEND_URI=${{ secrets.FRONTEND_URI }}" >> /home/ubuntu/backend.env
+
+            # Create frontend.env with VITE_ prefixed envs
+            echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" > /home/ubuntu/frontend.env
+            echo "VITE_BASE_URL=${{ secrets.VITE_BASE_UR }}" >> /home/ubuntu/frontend.env
+            echo "VITE_CLOUDINARY_URL=${{ secrets.VITE_CLOUDINARY_URL }}" >> /home/ubuntu/frontend.env
+            echo "VONAGE_API_KEY=${{ secrets.VONAGE_API_KEY }}" >> /home/ubuntu/frontend.env
+            echo "VONAGE_API_SECRET=${{ secrets.VONAGE_API_SECRET }}" >> /home/ubuntu/frontend.env
+
+            # Pull latest Docker images
+            docker pull $IMAGE_BACKEND
+            docker pull $IMAGE_FRONTEND
+
+            # Stop and remove old containers if they exist
+            docker stop backend || true && docker rm backend || true
+            docker stop frontend || true && docker rm frontend || true
+
+            # Run containers with mounted .env files
+            docker run -d --name backend --env-file /home/ubuntu/backend.env -p 8000:8000 $IMAGE_BACKEND
+            docker run -d --name frontend --env-file /home/ubuntu/frontend.env -p 80:80 $IMAGE_FRONTEND
+
+          EOF
