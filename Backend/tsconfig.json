@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                        // Good modern JS target
+    "module": "commonjs",                      // Required for Node.js
+    "outDir": "./dist",                        // Output folder
+    "rootDir": "./src",                        // Where TypeScript files start
+    "strict": true,                            // Enable all strict checks
+    "sourceMap": false,                        // Turn off source maps for production
+    "esModuleInterop": true,                   // Required for `import express from "express"`
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ESNext"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
+  },
+  "include": ["src", "src/types"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}
