@@ -13,59 +13,79 @@ function Navigation() {
         const section = document.getElementById(id);
         if (section) {
             section.scrollIntoView({ behavior: 'smooth' });
-            setIsOpen(false); // close mobile menu after click
+            setIsOpen(false);
         }
     };
 
     return (
-        <nav className="sticky top-0 z-50 px-6 py-4 shadow-md bg-blue-950/80 backdrop-blur-md">
+        <nav className="sticky top-0 z-50 px-4 py-2 shadow-md bg-blue-950/90 backdrop-blur-md">
             <div className="flex items-center justify-between mx-auto max-w-7xl">
-                
-                {/* Logo or Title */}
-                <Link to="/" className="text-2xl font-bold tracking-wide text-white transition hover:text-slate-300">LFRS</Link>
+
+                {/* Logo */}
+                <Link to="/" className="text-xl font-bold tracking-wide text-white hover:text-slate-300">
+                    LFRS
+                </Link>
 
                 {/* Desktop Menu */}
-                <ul className="items-center hidden space-x-8 font-medium text-white md:flex">
-                    <li><Link to="/" className="transition hover:text-slate-300">Home</Link></li>
-                    <li><Link to="/reports" className="transition hover:text-slate-300">Reports</Link></li>
-                    <li><button onClick={() => handleScrollTo('aboutUs')} className="transition hover:text-slate-300">About</button></li>
-                    <li><button onClick={() => handleScrollTo('footer')} className="transition hover:text-slate-300">Contact</button></li>
+                <ul className="hidden md:flex items-center space-x-6 text-white font-medium text-base">
+                    <li><Link to="/" className="hover:text-slate-300 transition">Home</Link></li>
+                    <li><Link to="/reports" className="hover:text-slate-300 transition">Reports</Link></li>
+                    <li><button onClick={() => handleScrollTo('aboutUs')} className="hover:text-slate-300 transition">About</button></li>
+                    <li><button onClick={() => handleScrollTo('footer')} className="hover:text-slate-300 transition">Contact</button></li>
                 </ul>
 
-                {/* Auth Buttons */}
-                <div className="items-center hidden gap-4 md:flex">
+                {/* Desktop Auth Buttons */}
+                <div className="hidden md:flex items-center gap-4">
                     <SignedIn>
                         <UserButton afterSignOutUrl="/" />
                     </SignedIn>
                     <SignedOut>
-                        <Link to="/signin"><Button variant="link" className="text-white">Signin</Button></Link>
-                        <Link to="/signup"><Button variant="outline" className="w-full text-white">Signup</Button></Link>
+                        <Link to="/signin">
+                            <Button variant="link" className="text-white">Signin</Button>
+                        </Link>
+                        <Link to="/signup">
+                            <Button variant="outline" className="text-white border-white hover:bg-white hover:text-blue-900">Signup</Button>
+                        </Link>
                     </SignedOut>
                 </div>
 
                 {/* Mobile Menu Icon */}
-                <div className="text-white md:hidden" onClick={toggleMenu}>
-                    {isOpen ? <X size={26} /> : <Menu size={26} />}
+                <div className="md:hidden text-white" onClick={toggleMenu}>
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </div>
             </div>
 
-            {/* Mobile Dropdown Menu */}
+            {/* Mobile Dropdown Menu - Compact */}
             {isOpen && (
-                <div className="px-6 py-4 mt-3 space-y-4 font-medium text-white shadow-lg md:hidden rounded-xl bg-blue-900/90 backdrop-blur-sm">
-                    <ul className="space-y-3">
-                        <li><Link to="/" onClick={toggleMenu} className="block transition hover:text-slate-300">Home</Link></li>
-                        <li><Link to="/reports" onClick={toggleMenu} className="block transition hover:text-slate-300">Reports</Link></li>
-                        <li><button onClick={() => handleScrollTo('aboutUs')} className="block w-full text-left transition hover:text-slate-300">About</button></li>
-                        <li><button onClick={() => handleScrollTo('footer')} className="block w-full text-left transition hover:text-slate-300">Contact</button></li>
+                <div className="md:hidden mt-2 px-3 py-2 space-y-1 bg-blue-900/95 text-white rounded-md shadow-md max-h-[60vh] overflow-y-auto text-sm">
+                    <ul className="space-y-1">
+                        <li><Link to="/" onClick={toggleMenu} className="block py-1 hover:text-slate-300">Home</Link></li>
+                        <li><Link to="/reports" onClick={toggleMenu} className="block py-1 hover:text-slate-300">Reports</Link></li>
+                        <li><button onClick={() => handleScrollTo('aboutUs')} className="block w-full text-left py-1 hover:text-slate-300">About</button></li>
+                        <li><button onClick={() => handleScrollTo('footer')} className="block w-full text-left py-1 hover:text-slate-300">Contact</button></li>
                     </ul>
 
-                    <div className="flex flex-col gap-2 pt-4 border-t border-slate-600">
+                    <div className="pt-2 border-t border-slate-600 flex flex-col gap-1">
                         <SignedIn>
                             <UserButton afterSignOutUrl="/" />
                         </SignedIn>
                         <SignedOut>
-                            <Link to="/signin"><Button variant="link" className="w-full text-white">Signin</Button></Link>
-                            <Link to="/signup"><Button variant="outline" className="w-ful">Signup</Button></Link>
+                            <Link to="/signin">
+                                <Button
+                                    variant="link"
+                                    className="w-full text-white text-xs px-2 py-1"
+                                >
+                                    Signin
+                                </Button>
+                            </Link>
+                            <Link to="/signup">
+                                <Button
+                                    variant="outline"
+                                    className="w-full text-white text-xs px-2 py-1 border-white hover:bg-white hover:text-blue-900"
+                                >
+                                    Signup
+                                </Button>
+                            </Link>
                         </SignedOut>
                     </div>
                 </div>
